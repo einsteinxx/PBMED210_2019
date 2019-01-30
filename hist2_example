@@ -1,0 +1,21 @@
+
+
+data2 = imrotate(data,2,'crop');
+m = zeros(size(data,1),size(data,2));
+
+for ii = 1:size(data,1)
+   for jj = 1:size(data,2)
+       
+       if (data(ii,jj) == data2(ii,jj))
+           
+      mi(ii,jj) =1;
+       else
+           
+       end
+      
+      
+   end
+    
+    
+end
+
