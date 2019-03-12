@@ -2,7 +2,9 @@ close all;
 
 %BW = imread('text.png');
 BW = imread('cameraman.tif');
-%BW2 = BW;
+grad = imread('gradient.png');
+grad = grad(:,:,1);
+orig= BW;
 
 a = find(BW > 128);
 b = find(BW <=128);
@@ -95,9 +97,31 @@ caxis([0 1]);
 g2 = BW - erodedBW;
 figure, imshow(g2); caxis([ 0 1]);
 
-%%
+%% FIRST DERIVATIVE
+%take a slice
+s = grad(128,:);
+d1 = diff(s);
+d2 = diff(d1);
+
+figure, plot(s,'k.-');grid on;
+hold on;
+plot(d1,'ro-');
+plot(d2,'b*-');
 
 
+figure, mesh(BW);
+
+
+
+
+%% GAUSSIAN FILTERING
+
+sd =1.0;
+%G = (1/(sqrt(2 * pi) *sd^2)) * exp(-((pow(x,2) + (pow(y,2)))/(2* pow(sd,2))));
+x = -1:0.01:1;
+Gx = (1/(sqrt(2 * pi) *sd)) * ...
+    exp(-(pow2(x))/(2* pow2(sd)));
+figure, plot(x,Gx)
 
 
 %% DILATION WITH HIT CRITERIA
@@ -118,6 +142,14 @@ for xx = 1:size(BW,1)
                 BW(xx+1,yy), ...
                 BW(xx,yy-1));
             %not at the top or bottom border
+            
+            
+            for ii = -1:1
+                for jj = -1:1
+                    BW(xx-1:xx+1,yy+jj) == sel(:,jj)
+                end
+            end
+            
             if ( (BW(xx,yy+1) == sel(3,2)) && ...
                     (BW(xx,yy-1) == sel(1,2)))
                 %top and bottom match
